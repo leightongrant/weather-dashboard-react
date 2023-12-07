@@ -1,11 +1,6 @@
-const city = 'London'
-const endPoint = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=5&q=${city}&appid=${
-  import.meta.env.VITE_OPENWEATHER_APIKEY
-}`
-
-async function useOpenWeather() {
+async function useOpenWeather(url) {
   try {
-    const req = await fetch(endPoint)
+    const req = await fetch(url)
     if (req.status === 200) {
       const response = await req.json()
       return response
