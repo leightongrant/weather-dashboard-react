@@ -39,6 +39,9 @@ jobs:
         run: bun install
       - name: Build
         run: bun run build
+        env:
+          VITE_OPENWEATHER_APIKEY: ${{ secrets.VITE_OPENWEATHER_APIKEY }}
+          VITE_UNSPLASH_ACCESSKEY: ${{ secrets.VITE_UNSPLASH_ACCESSKEY }}
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
