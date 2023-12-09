@@ -45,14 +45,14 @@ export default function WeatherCard({ day }) {
       }}>
       <div
         className={clsx(
-          'flex flex-col p-5 place-items-center bg-gradient-to-t h-96 rounded-md',
+          'flex flex-col p-2 pb-8 place-items-center bg-gradient-to-t h-auto rounded-md',
           getColor()
         )}>
         <div>
           <img src={icon} alt={`weather icon ${day.weather[0].icon}`} />
         </div>
-        <div className="px-10 text-center">
-          <h2 className="mb-5 text-xl font-medium">{`${startCase(
+        <div className="px-10 text-center mb-5">
+          <h2 className="text-xl font-medium">{`${startCase(
             day.weather[0].description
           )}`}</h2>
 
