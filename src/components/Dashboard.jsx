@@ -32,11 +32,11 @@ export default function Dashboard() {
       <div className="flex justify-center my-8">
         <Query setQuery={setCityQuery} />
       </div>
-      <div className="flex items-center gap-5 justify-center mb-10">
-        <h2 className="text-blue-300 uppercase font-extrabold">
+      <div className="flex items-center gap-5 justify-center mb-10 flex-wrap">
+        <h2 className="text-blue-300 uppercase font-extrabold whitespace-nowrap">
           {weatherData && weatherData.city}
         </h2>
-        <p className="text-3xl">
+        <p className="text-3xl whitespace-nowrap">
           {weatherData && weatherData.days[0].weather[0].description}
         </p>
       </div>
