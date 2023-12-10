@@ -1,4 +1,10 @@
 import { useState, useEffect } from 'react'
+import { GiWindsock } from 'react-icons/gi'
+import { WiHumidity } from 'react-icons/wi'
+import {
+  LiaTemperatureLowSolid,
+  LiaTemperatureHighSolid,
+} from 'react-icons/lia'
 import useUnsplash from '../hooks/unsplash'
 import clsx from 'clsx'
 
@@ -29,7 +35,7 @@ export default function WeatherCard({ day }) {
   useEffect(() => {
     getBackgrounds
       .then((d) => {
-        setBack(d.results[1].urls.regular)
+        setBack(d.results[1].urls.small)
       })
       .catch((e) => console.log(e))
   }, [])
@@ -60,10 +66,22 @@ export default function WeatherCard({ day }) {
         </div>
 
         <div className="px-10 text-center">
-          <p>{`Low: ${Math.round(day.temp.min)}°C`}</p>
-          <p>{`High: ${Math.round(day.temp.max)}°C`}</p>
-          <p>{`Humidity: ${day.humidity}`}</p>
-          <p>{`Wind Speed: ${day.speed} kph`}</p>
+          <div className="flex gap-2 items-center">
+            <LiaTemperatureLowSolid />
+            <p>{`...${Math.round(day.temp.min)}°C`}</p>
+          </div>
+          <div className="flex gap-2 items-center">
+            <LiaTemperatureHighSolid />
+            <p>{`...${Math.round(day.temp.max)}°C`}</p>
+          </div>
+          <div className="flex gap-2 items-center">
+            <WiHumidity />
+            <p>...{day.humidity}</p>
+          </div>
+          <div className="flex gap-2 items-center">
+            <GiWindsock />
+            <p>{`...${day.speed} km/h`}</p>
+          </div>
         </div>
       </div>
     </div>
