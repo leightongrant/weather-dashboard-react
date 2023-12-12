@@ -76,7 +76,7 @@ export default function WeatherCard({ day }) {
           </div>
           <div className="flex gap-2 items-center">
             <WiHumidity />
-            <p>...{day.humidity}</p>
+            <p>...{day.humidity} %</p>
           </div>
           <div className="flex gap-2 items-center">
             <GiWindsock />

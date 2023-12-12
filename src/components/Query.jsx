@@ -5,9 +5,9 @@ const Query = ({ setQuery }) => {
   function handleQuery(e) {
     let city
     if (e.type === 'keydown') {
-      city = e.target.value
+      city = !e.target.value ? 'London' : e.target.value
     } else {
-      city = queryRef.current.value
+      city = !queryRef.current.value ? 'New York' : queryRef.current.value
     }
     const cnt = 15
     setQuery(
