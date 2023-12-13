@@ -2,15 +2,16 @@ import { useState, useEffect } from 'react'
 import useOpenWeather from '../hooks/weather'
 import WeatherCard from './WeatherCard'
 import Query from './Query'
+import SearchHistory from './SearchHistory'
 
 export default function Dashboard() {
-  const [cityQuery, setCityQuery] = useState(
-    `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${15}&q=${'London'}&appid=${
-      import.meta.env.VITE_OPENWEATHER_APIKEY
-    }`
-  )
+  const [cityQuery, setCityQuery] = useState('London')
+  let url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${15}&q=${cityQuery}&appid=${
+    import.meta.env.VITE_OPENWEATHER_APIKEY
+  }`
+  const [history, setHistory] = useState(['London', 'New York'])
   const [weatherData, setWeatherData] = useState(null)
-  const getWeather = useOpenWeather(cityQuery)
+  const getWeather = useOpenWeather(url)
 
   useEffect(() => {
     getWeather
@@ -19,21 +20,38 @@ export default function Dashboard() {
           city: `${data.city.name}, ${data.city.country}`,
           days: data.list,
         }
+
         setWeatherData(sanitizedData)
       })
       .catch((error) => console.log(error))
   }, [cityQuery])
   // console.log(weatherData.days[0])
+
   return (
     <div className="container grid p-5 mx-auto">
-      <h1 className="inline-block text-center text-blue-600 uppercase subpixel-antialiased font-black">
+      <h1 className="inline-block subpixel-antialiased font-black text-center text-blue-600 uppercase">
         Weather Dashboard
       </h1>
-      <div className="flex justify-center my-8">
-        <Query setQuery={setCityQuery} />
+      <div className="flex justify-center my-3">
+        <Query
+          setQuery={setCityQuery}
+          setHistory={setHistory}
+          history={history}
+        />
       </div>
-      <div className="flex items-center gap-5 justify-center mb-10 flex-wrap">
-        <h2 className="text-blue-300 uppercase font-extrabold whitespace-nowrap">
+      <div className="flex justify-center gap-3 py-5">
+        {history.map((search, idx) => (
+          <SearchHistory
+            search={search}
+            setCityQuery={setCityQuery}
+            key={idx}
+            history={history}
+            setHistory={setHistory}
+          />
+        ))}
+      </div>
+      <div className="flex flex-wrap items-center justify-center gap-5 mb-10">
+        <h2 className="font-extrabold text-blue-300 uppercase whitespace-nowrap">
           {weatherData && weatherData.city}
         </h2>
         <p className="text-3xl whitespace-nowrap">
