@@ -3,30 +3,40 @@ import useOpenWeather from '../hooks/weather'
 import WeatherCard from './WeatherCard'
 import Query from './Query'
 import SearchHistory from './SearchHistory'
+import { startCase } from 'lodash-es'
 
 export default function Dashboard() {
-  const [cityQuery, setCityQuery] = useState('London')
-  let url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${15}&q=${cityQuery}&appid=${
+  const [cityQuery, setCityQuery] = useState('')
+  let url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${12}&q=${cityQuery}&appid=${
     import.meta.env.VITE_OPENWEATHER_APIKEY
   }`
-  const [history, setHistory] = useState(['London', 'New York'])
+  const [history, setHistory] = useState(
+    JSON.parse(localStorage.getItem('searchHistory')) ||
+      localStorage.setItem('searchHistory', JSON.stringify([]))
+  )
+
   const [weatherData, setWeatherData] = useState(null)
   const getWeather = useOpenWeather(url)
 
   useEffect(() => {
-    getWeather
-      .then((data) => {
-        const sanitizedData = {
-          city: `${data.city.name}, ${data.city.country}`,
-          days: data.list,
-        }
+    history && localStorage.setItem('searchHistory', JSON.stringify(history))
+  }, [history])
 
-        setWeatherData(sanitizedData)
-      })
-      .catch((error) => console.log(error))
+  useEffect(() => {
+    cityQuery &&
+      getWeather
+        .then((data) => {
+          const sanitizedData = {
+            city: `${data.city.name}, ${data.city.country}`,
+            days: data.list,
+          }
+
+          setWeatherData(sanitizedData)
+        })
+        .catch((error) => console.log(error))
   }, [cityQuery])
   // console.log(weatherData.days[0])
-
+  //console.log(typeof history)
   return (
     <div className="container grid p-5 mx-auto">
       <h1 className="inline-block subpixel-antialiased font-black text-center text-blue-600 uppercase">
@@ -40,15 +50,16 @@ export default function Dashboard() {
         />
       </div>
       <div className="flex justify-center gap-3 py-5">
-        {history.map((search, idx) => (
-          <SearchHistory
-            search={search}
-            setCityQuery={setCityQuery}
-            key={idx}
-            history={history}
-            setHistory={setHistory}
-          />
-        ))}
+        {history &&
+          history.map((search, idx) => (
+            <SearchHistory
+              search={search}
+              setCityQuery={setCityQuery}
+              key={idx}
+              history={history}
+              setHistory={setHistory}
+            />
+          ))}
       </div>
       <div className="flex flex-wrap items-center justify-center gap-5 mb-10">
         <h2 className="font-extrabold text-blue-300 uppercase whitespace-nowrap">
