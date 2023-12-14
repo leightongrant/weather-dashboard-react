@@ -13,19 +13,16 @@ import { startCase } from 'lodash-es'
 export default function WeatherCard({ day }) {
   const date = new Date(day.dt * 1000)
   const icon = `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`
-  const cond = day.weather[0].description
+  const cond = `${day.weather[0].main}%20town`
   const getBackgrounds = useUnsplash(cond)
   const [back, setBack] = useState(null)
 
   function getColor() {
     const colors = [
-      'from-sky-950',
-      'from-indigo-950',
-      'from-violet-950',
-      'from-teal-950',
-      'from-rose-950',
+      'from-slate-950',
+      'from-gray-900',
       'from-zinc-950',
-      'from-stone-950',
+      'from-stone-900',
       'from-neutral-950',
     ]
     const idx = Math.floor(Math.random() * colors.length)
@@ -35,14 +32,15 @@ export default function WeatherCard({ day }) {
   useEffect(() => {
     getBackgrounds
       .then((d) => {
-        setBack(d.results[1].urls.small)
+        const rIdx = Math.floor(Math.random() * d.results.length)
+        setBack(d.results[rIdx].urls.small)
       })
       .catch((e) => console.log(e))
-  }, [])
+  }, [cond])
 
   return (
     <div
-      className="border-0 border-gray-200 rounded-md"
+      className="rounded-md"
       style={{
         backgroundImage: `url(${back})`,
         backgroundRepeat: 'no-repeat',
@@ -57,7 +55,7 @@ export default function WeatherCard({ day }) {
         <div>
           <img src={icon} alt={`weather icon ${day.weather[0].icon}`} />
         </div>
-        <div className="px-10 text-center mb-5">
+        <div className="px-10 mb-5 text-center">
           <h2 className="text-xl font-medium">{`${startCase(
             day.weather[0].description
           )}`}</h2>
@@ -66,19 +64,19 @@ export default function WeatherCard({ day }) {
         </div>
 
         <div className="px-10 text-center">
-          <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2">
             <LiaTemperatureLowSolid />
             <p>{`...${Math.round(day.temp.min)}°C`}</p>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2">
             <LiaTemperatureHighSolid />
             <p>{`...${Math.round(day.temp.max)}°C`}</p>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2">
             <WiHumidity />
             <p>...{day.humidity} %</p>
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex items-center gap-2">
             <GiWindsock />
             <p>{`...${day.speed} km/h`}</p>
           </div>
