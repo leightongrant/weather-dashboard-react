@@ -1,25 +1,31 @@
 import { Input, Button } from 'react-daisyui'
 import { useRef } from 'react'
-const Query = ({ setQuery }) => {
+const Query = ({ setQuery, setHistory, history }) => {
   const queryRef = useRef()
+
   function handleQuery(e) {
-    let city
-    if (e.type === 'keydown') {
-      city = !e.target.value ? 'London' : e.target.value
+    if (queryRef.current.value !== '') {
+      let city
+      if (e.type === 'keydown') {
+        city = !e.target.value ? '' : e.target.value
+        !history.includes(city) &&
+          setHistory((pre) => [...pre, city.toLowerCase()])
+      } else {
+        city = !queryRef.current.value ? '' : queryRef.current.value
+        !history.includes(city) &&
+          setHistory((pre) => [...pre, city.toLowerCase()])
+      }
+      setQuery(city)
+      queryRef.current.value = null
     } else {
-      city = !queryRef.current.value ? 'New York' : queryRef.current.value
+      queryRef.current.placeholder = 'Please enter a City Name'
     }
-    const cnt = 15
-    setQuery(
-      `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${cnt}&q=${city}&appid=${
-        import.meta.env.VITE_OPENWEATHER_APIKEY
-      }`
-    )
-    queryRef.current.value = null
   }
+
   return (
-    <div className="flex w-full  p-4 items-center justify-center gap-2 font-sans">
+    <div className="flex items-center justify-center w-full gap-2 p-4 font-sans">
       <Input
+        className="bg-stone-700/50"
         type="text"
         name="query"
         id="query"
@@ -31,7 +37,11 @@ const Query = ({ setQuery }) => {
           }
         }}
       />
-      <Button type="button" onClick={handleQuery}>
+
+      <Button
+        type="button"
+        onClick={handleQuery}
+        className="bg-stone-700/50 hover:bg-stone-800/50">
         Search
       </Button>
     </div>
