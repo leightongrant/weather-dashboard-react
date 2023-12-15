@@ -13,7 +13,7 @@ export default function Dashboard() {
   )
   const [cityQuery, setCityQuery] = useState(last(history) || '')
   const [weatherData, setWeatherData] = useState(null)
-  let url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${12}&q=${cityQuery}&appid=${
+  let url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${10}&q=${cityQuery}&appid=${
     import.meta.env.VITE_OPENWEATHER_APIKEY
   }`
   const getWeather = useOpenWeather(url)
@@ -39,10 +39,12 @@ export default function Dashboard() {
 
   return (
     <div className="container grid p-5 mx-auto">
-      <h1 className="inline-block subpixel-antialiased font-black text-center uppercase">
-        <span className="text-[#ec7052]">Weather</span>
-        <span className="text-stone-700">Dashboard</span>
-      </h1>
+      <div>
+        <h1 className="subpixel-antialiased font-black text-center uppercase text-[#ec7052] flex flex-wrap justify-center">
+          <span>Weather</span>
+          <span className="text-stone-700">Dashboard</span>
+        </h1>
+      </div>
 
       {/* City query */}
       <div className="flex justify-center my-3 ">
@@ -67,14 +69,16 @@ export default function Dashboard() {
             />
           ))}
       </div>
+
+      {/* Weather Info */}
       <div className="p-5 rounded-md bg-opacity-10 bg-stone-700">
         {/* City */}
         <div className="flex flex-wrap items-center justify-center gap-5 mb-10 text-[#ec7052]">
           {weatherData && <City weatherData={weatherData} />}
         </div>
 
-        {/* Weather Data */}
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xxl:grid-cols-5">
+        {/* Weather Cards */}
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xxl:grid-cols-5">
           {weatherData &&
             weatherData.days.map((day, idx) => (
               <WeatherCard day={day} key={idx} />
