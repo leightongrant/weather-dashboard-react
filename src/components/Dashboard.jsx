@@ -39,12 +39,13 @@ export default function Dashboard() {
 
   return (
     <div className="container grid p-5 mx-auto">
-      <h1 className="inline-block subpixel-antialiased font-black text-center text-blue-600 uppercase">
-        Weather Dashboard
+      <h1 className="inline-block subpixel-antialiased font-black text-center uppercase">
+        <span className="text-[#ec7052]">Weather</span>
+        <span className="text-stone-700">Dashboard</span>
       </h1>
 
       {/* City query */}
-      <div className="flex justify-center my-3">
+      <div className="flex justify-center my-3 ">
         <Query
           setQuery={setCityQuery}
           setHistory={setHistory}
@@ -53,7 +54,7 @@ export default function Dashboard() {
       </div>
 
       {/* Search History */}
-      <div className="flex flex-wrap items-center justify-center gap-3 py-5">
+      <div className="flex flex-wrap items-center justify-center gap-3 py-5 ">
         {history.length !== 0 && 'RECENT: '}
         {history &&
           history.map((search, idx) => (
@@ -66,9 +67,9 @@ export default function Dashboard() {
             />
           ))}
       </div>
-      <div className="p-5 rounded-md bg-stone-700">
+      <div className="p-5 rounded-md bg-opacity-10 bg-stone-700">
         {/* City */}
-        <div className="flex flex-wrap items-center justify-center gap-5 mb-10">
+        <div className="flex flex-wrap items-center justify-center gap-5 mb-10 text-[#ec7052]">
           {weatherData && <City weatherData={weatherData} />}
         </div>
 

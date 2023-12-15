@@ -15,7 +15,7 @@ const SearchHistory = ({ search, history, setHistory, setCityQuery }) => {
 
   return (
     <div
-      className="flex items-center gap-3 px-1 py-1 rounded bg-indigo-500/50 hover:cursor-pointer"
+      className="flex items-center gap-3 px-1 py-1 rounded bg-stone-700/50 hover:cursor-pointer"
       onClick={handleClick}>
       <p ref={searchRef}>{startCase(search)}</p>
       <button className="rounded-lg hover:text-red-500 hover:cursor-auto">

@@ -56,29 +56,33 @@ export default function WeatherCard({ day }) {
           <img src={icon} alt={`weather icon ${day.weather[0].icon}`} />
         </div>
         <div className="px-10 mb-5 text-center">
-          <h2 className="text-xl font-medium">{`${startCase(
+          <h2 className="text-xl font-light bg-stone-900 px-2 rounded-md text-[#ec7052]">{`${startCase(
             day.weather[0].description
           )}`}</h2>
 
           <p>{date.toDateString()}</p>
         </div>
 
-        <div className="px-10 text-center">
-          <div className="flex items-center gap-2">
-            <LiaTemperatureLowSolid />
-            <p>{`...${Math.round(day.temp.min)}°C`}</p>
+        <div className="flex gap-4 px-10 text-center">
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="font-light text-[#ec7052]">Low:</p>
+              <p>{`${Math.round(day.temp.min)}°C`}</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="font-light text-[#ec7052]">High:</p>
+              <p>{`${Math.round(day.temp.max)}°C`}</p>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <LiaTemperatureHighSolid />
-            <p>{`...${Math.round(day.temp.max)}°C`}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <WiHumidity />
-            <p>...{day.humidity} %</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <GiWindsock />
-            <p>{`...${day.speed} km/h`}</p>
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="font-light text-[#ec7052]">Humid:</p>
+              <p>{day.humidity} %</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <p className="font-light text-[#ec7052]">Wind:</p>
+              <p>{`${Math.round(day.speed)} km/h`}</p>
+            </div>
           </div>
         </div>
       </div>
