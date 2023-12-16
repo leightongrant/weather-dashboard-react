@@ -38,7 +38,7 @@ export default function Dashboard() {
   //console.log(typeof history)
 
   return (
-    <div className="container grid p-5 mx-auto">
+    <div className="container mx-auto">
       <div>
         <h1 className="subpixel-antialiased font-black text-center uppercase text-[#ec7052] flex flex-wrap justify-center">
           <span>Weather</span>
@@ -71,14 +71,14 @@ export default function Dashboard() {
       </div>
 
       {/* Weather Info */}
-      <div className="p-5 rounded-md bg-opacity-10 bg-stone-700">
+      <div className="p-5 mt-10 rounded-md bg-opacity-10 bg-stone-400">
         {/* City */}
         <div className="flex flex-col items-center justify-center gap-5 mb-10 text-[#ec7052]">
           {weatherData && <City weatherData={weatherData} />}
         </div>
 
         {/* Weather Cards */}
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xxl:grid-cols-5">
+        <div className="grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xxl:grid-cols-5">
           {weatherData &&
             weatherData.days.map((day, idx) => (
               <WeatherCard day={day} key={idx} />

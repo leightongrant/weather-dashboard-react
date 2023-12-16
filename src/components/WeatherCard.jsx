@@ -52,9 +52,22 @@ export default function WeatherCard({ day }) {
           'flex flex-col p-2 pb-8 place-items-center bg-gradient-to-t h-full rounded-md',
           getColor()
         )}>
-        <div className="self-start p-1 text-black bg-white shadow-md day shadow-slate-700">
-          <p className="w-8 text-center">{date.toDateString().slice(0, 3)}</p>
+        <div className="self-start w-full">
+          <div className="flex items-center justify-between">
+            <div className="p-1 text-black bg-white rounded-lg shadow-md day shadow-slate-700">
+              <p className="w-8 text-center ">
+                {date.toDateString().slice(0, 3)}
+              </p>
+            </div>
+            <div className="">
+              <p className="p-1 font-bold drop-shadow-xl">
+                {date.toDateString().slice(4)}
+              </p>
+            </div>
+            <div className="w-8"></div>
+          </div>
         </div>
+
         <div>
           <img src={icon} alt={`weather icon ${day.weather[0].icon}`} />
         </div>
@@ -62,8 +75,6 @@ export default function WeatherCard({ day }) {
           <h2 className="text-sm font-bold mb-2 bg-stone-900 px-2 rounded-md text-[#ec7052]">{`${startCase(
             day.weather[0].description
           )}`}</h2>
-
-          <p>{date.toDateString().slice(4)}</p>
         </div>
 
         <div className="flex flex-wrap gap-4 px-10 text-center">
