@@ -73,7 +73,7 @@ export default function Dashboard() {
       {/* Weather Info */}
       <div className="p-5 rounded-md bg-opacity-10 bg-stone-700">
         {/* City */}
-        <div className="flex flex-wrap items-center justify-center gap-5 mb-10 text-[#ec7052]">
+        <div className="flex flex-col items-center justify-center gap-5 mb-10 text-[#ec7052]">
           {weatherData && <City weatherData={weatherData} />}
         </div>
 
