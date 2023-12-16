@@ -49,38 +49,41 @@ export default function WeatherCard({ day }) {
       }}>
       <div
         className={clsx(
-          'flex flex-col p-2 pb-8 place-items-center bg-gradient-to-t h-auto rounded-md',
+          'flex flex-col p-2 pb-8 place-items-center bg-gradient-to-t h-full rounded-md',
           getColor()
         )}>
+        <div className="self-start p-1 text-black bg-white shadow-md day shadow-slate-700">
+          <p className="w-8 text-center">{date.toDateString().slice(0, 3)}</p>
+        </div>
         <div>
           <img src={icon} alt={`weather icon ${day.weather[0].icon}`} />
         </div>
         <div className="px-10 mb-5 text-center">
-          <h2 className="text-xl font-light bg-stone-900 px-2 rounded-md text-[#ec7052]">{`${startCase(
+          <h2 className="text-sm font-bold mb-2 bg-stone-900 px-2 rounded-md text-[#ec7052]">{`${startCase(
             day.weather[0].description
           )}`}</h2>
 
-          <p>{date.toDateString()}</p>
+          <p>{date.toDateString().slice(4)}</p>
         </div>
 
-        <div className="flex gap-4 px-10 text-center">
+        <div className="flex flex-wrap gap-4 px-10 text-center">
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-light text-[#ec7052]">Low:</p>
+              <p className="font-light text-[#ec7052]">L:</p>
               <p>{`${Math.round(day.temp.min)}°C`}</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="font-light text-[#ec7052]">High:</p>
+              <p className="font-light text-[#ec7052]">H:</p>
               <p>{`${Math.round(day.temp.max)}°C`}</p>
             </div>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-light text-[#ec7052]">Humid:</p>
+              <p className="font-light text-[#ec7052]">HM:</p>
               <p>{day.humidity} %</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="font-light text-[#ec7052]">Wind:</p>
+              <p className="font-light text-[#ec7052]">WD:</p>
               <p>{`${Math.round(day.speed)} km/h`}</p>
             </div>
           </div>
