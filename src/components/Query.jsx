@@ -23,9 +23,9 @@ const Query = ({ setQuery, setHistory, history }) => {
   }
 
   return (
-    <div className="flex items-center justify-center w-full gap-2 p-4 font-sans">
+    <div className="flex items-center justify-center w-full gap-2 p-4 font-sans ">
       <Input
-        className="bg-stone-700/50"
+        className="bg-stone-700/50 text-stone-100"
         type="text"
         name="query"
         id="query"
@@ -41,7 +41,7 @@ const Query = ({ setQuery, setHistory, history }) => {
       <Button
         type="button"
         onClick={handleQuery}
-        className="bg-stone-700/50 hover:bg-stone-800/50">
+        className="bg-stone-700/50 hover:bg-stone-800/50 text-stone-100">
         Search
       </Button>
     </div>
