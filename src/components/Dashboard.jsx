@@ -5,8 +5,10 @@ import Query from './Query'
 import SearchHistory from './SearchHistory'
 import City from './City'
 import { last } from 'lodash-es'
+import clsx from 'clsx'
 
 export default function Dashboard() {
+  const [notFound, setNotFound] = useState(false)
   const [history, setHistory] = useState(
     JSON.parse(localStorage.getItem('searchHistory')) ||
       localStorage.setItem('searchHistory', JSON.stringify([]))
@@ -26,11 +28,16 @@ export default function Dashboard() {
     cityQuery &&
       getWeather
         .then((data) => {
-          const sanitizedData = {
-            city: `${data.city.name}, ${data.city.country}`,
-            days: data.list,
+          if (!data) {
+            setNotFound(!notFound)
+          } else {
+            notFound && setNotFound(!notFound)
+            const sanitizedData = {
+              city: `${data.city.name}, ${data.city.country}`,
+              days: data.list,
+            }
+            setWeatherData(sanitizedData)
           }
-          setWeatherData(sanitizedData)
         })
         .catch((error) => console.log(error))
   }, [cityQuery])
@@ -68,6 +75,33 @@ export default function Dashboard() {
               setHistory={setHistory}
             />
           ))}
+      </div>
+
+      {/* Not Found */}
+      <div className="flex justify-center my-3">
+        <div
+          role="alert"
+          className={clsx(
+            'alert alert-error flex justify-between',
+            !notFound && 'hidden'
+          )}>
+          <span>City not found!</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 stroke-current shrink-0 hover:cursor-pointer"
+            fill="none"
+            viewBox="0 0 24 24">
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              onClick={() => {
+                setNotFound(!notFound)
+              }}
+            />
+          </svg>
+        </div>
       </div>
 
       {/* Weather Info */}
