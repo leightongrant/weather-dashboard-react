@@ -15,6 +15,7 @@ export default function Dashboard() {
   )
   const [weatherData, setWeatherData] = useState(null)
   const [notFound, setNotFound] = useState(false)
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     history && localStorage.setItem('searchHistory', JSON.stringify(history))
@@ -36,6 +37,7 @@ export default function Dashboard() {
 
       if (!res.ok) {
         setNotFound(true)
+        setMessage(res.statusText)
       }
 
       if (res.ok) {
@@ -86,11 +88,9 @@ export default function Dashboard() {
       {/* City query */}
       <div className="flex justify-center my-3 ">
         <Query
-          setHistory={setHistory}
-          history={history}
-          setLoading={setLoading}
-          setWeatherData={setWeatherData}
+          setNotFound={setNotFound}
           fetchWeather={fetchWeather}
+          setMessage={setMessage}
         />
       </div>
 
@@ -117,7 +117,7 @@ export default function Dashboard() {
             'alert alert-warning flex justify-between',
             !notFound && 'hidden'
           )}>
-          <p className="text-lg text-black">City not found!</p>
+          <p className="text-lg text-black">{message}</p>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="w-6 h-6 stroke-current shrink-0 hover:cursor-pointer"
