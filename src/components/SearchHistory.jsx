@@ -1,11 +1,11 @@
 import { IoMdCloseCircle } from 'react-icons/io'
 import { useRef } from 'react'
 import { startCase } from 'lodash-es'
-const SearchHistory = ({ search, history, setHistory, setCityQuery }) => {
+const SearchHistory = ({ search, history, setHistory, fetchWeather }) => {
   const searchRef = useRef()
   function handleClick(e) {
     e.stopPropagation()
-    setCityQuery(e.target.textContent)
+    fetchWeather(e.target.textContent.toLowerCase())
   }
   function handleClose(e) {
     e.stopPropagation()
