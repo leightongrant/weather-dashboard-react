@@ -7,6 +7,27 @@ const Query = ({ fetchWeather }) => {
   const queryRef = useRef()
   const [userlocation, setUserLocation] = useState('')
 
+  function getPosition() {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        getCityName(pos.coords.latitude, pos.coords.longitude)
+      },
+      (e) => {
+        console.log(e)
+      }
+    )
+  }
+
+  async function getCityName(lat, lon) {
+    const res = await fetch(
+      `http://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=${1}&appid=${
+        import.meta.env.VITE_OPENWEATHER_APIKEY
+      }`
+    )
+    const data = await res.json()
+    queryRef.current.value = data[0].name
+  }
+
   function handleQuery(e) {
     if (queryRef.current.value === '') {
       alert('Please enter search term')

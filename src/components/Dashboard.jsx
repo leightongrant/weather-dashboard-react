@@ -20,6 +20,12 @@ export default function Dashboard() {
     history && localStorage.setItem('searchHistory', JSON.stringify(history))
   }, [history])
 
+  useEffect(() => {
+    if (history.length > 0) {
+      fetchWeather(last(history))
+    }
+  }, [])
+
   async function fetchWeather(city) {
     const url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${10}&q=${city}&appid=${
       import.meta.env.VITE_OPENWEATHER_APIKEY
@@ -29,7 +35,6 @@ export default function Dashboard() {
       const data = await res.json()
 
       if (!res.ok) {
-        console.log(res.statusText)
         setNotFound(true)
       }
 
@@ -131,24 +136,22 @@ export default function Dashboard() {
 
       <div className="p-5 mt-10 rounded-md bg-opacity-10 bg-stone-400">
         <div className="flex flex-col items-center justify-center gap-5 mb-10 text-[#ec7052]">
-          {!weatherData ? '' : <City weatherData={weatherData} />}
+          {!weatherData ? (
+            <p className="text-3xl text-yellow-50">
+              Search for a city to see weather
+            </p>
+          ) : (
+            <City weatherData={weatherData} />
+          )}
         </div>
 
         {/* Weather Cards */}
         <div className="grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xxl:grid-cols-5">
-          {!weatherData ? (
-            <>
-              <h2></h2>
-              <h2 style={{ textAlign: 'center' }}>
-                Enter a city name to display the weather
-              </h2>
-              <h2></h2>
-            </>
-          ) : (
-            weatherData.days.map((day, idx) => (
-              <WeatherCard day={day} key={idx} />
-            ))
-          )}
+          {!weatherData
+            ? ''
+            : weatherData.days.map((day, idx) => (
+                <WeatherCard day={day} key={idx} />
+              ))}
         </div>
       </div>
     </div>
