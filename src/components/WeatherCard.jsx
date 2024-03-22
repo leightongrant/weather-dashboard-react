@@ -13,7 +13,7 @@ import { startCase } from 'lodash-es'
 export default function WeatherCard({ day }) {
   const date = new Date(day.dt * 1000)
   const icon = `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`
-  const cond = `${day.weather[0].main}%20town`
+  const cond = `${day.weather[0].main},weather`
   const getBackgrounds = useUnsplash(cond)
   const [back, setBack] = useState(null)
 
@@ -80,21 +80,21 @@ export default function WeatherCard({ day }) {
         <div className="flex flex-wrap gap-4 px-10 text-center">
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-light text-[#ec7052]">L:</p>
+              <p className="font-light text-[#ec7052]">Lo:</p>
               <p>{`${Math.round(day.temp.min)}°C`}</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="font-light text-[#ec7052]">H:</p>
+              <p className="font-light text-[#ec7052]">Hi:</p>
               <p>{`${Math.round(day.temp.max)}°C`}</p>
             </div>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <p className="font-light text-[#ec7052]">HM:</p>
+              <p className="font-light text-[#ec7052]">Hu:</p>
               <p>{day.humidity} %</p>
             </div>
             <div className="flex items-center gap-2">
-              <p className="font-light text-[#ec7052]">WD:</p>
+              <p className="font-light text-[#ec7052]">Wi:</p>
               <p>{`${Math.round(day.speed)} km/h`}</p>
             </div>
           </div>
