@@ -1,4 +1,4 @@
-async function useUnsplash(condition = 'clouds') {
+async function useUnsplash(condition) {
   const url = `https://api.unsplash.com/search/photos/?client_id=${
     import.meta.env.VITE_UNSPLASH_ACCESSKEY
   }&query=${condition}`

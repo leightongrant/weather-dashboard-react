@@ -1,41 +1,80 @@
 import { useState, useEffect } from 'react'
-import useOpenWeather from '../hooks/weather'
 import WeatherCard from './WeatherCard'
 import Query from './Query'
 import SearchHistory from './SearchHistory'
 import City from './City'
 import { last } from 'lodash-es'
+import clsx from 'clsx'
+import { RotatingLines } from 'react-loader-spinner'
 
 export default function Dashboard() {
+  const [loading, setLoading] = useState(false)
   const [history, setHistory] = useState(
     JSON.parse(localStorage.getItem('searchHistory')) ||
       localStorage.setItem('searchHistory', JSON.stringify([]))
   )
-  const [cityQuery, setCityQuery] = useState(last(history) || '')
   const [weatherData, setWeatherData] = useState(null)
-  let url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${10}&q=${cityQuery}&appid=${
-    import.meta.env.VITE_OPENWEATHER_APIKEY
-  }`
-  const getWeather = useOpenWeather(url)
+  const [notFound, setNotFound] = useState(false)
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     history && localStorage.setItem('searchHistory', JSON.stringify(history))
   }, [history])
 
   useEffect(() => {
-    cityQuery &&
-      getWeather
-        .then((data) => {
-          const sanitizedData = {
-            city: `${data.city.name}, ${data.city.country}`,
-            days: data.list,
-          }
-          setWeatherData(sanitizedData)
-        })
-        .catch((error) => console.log(error))
-  }, [cityQuery])
-  // console.log(weatherData.days[0])
-  //console.log(typeof history)
+    if (history.length > 0) {
+      fetchWeather(last(history))
+    }
+  }, [])
+
+  async function fetchWeather(city) {
+    const url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${10}&q=${city}&appid=${
+      import.meta.env.VITE_OPENWEATHER_APIKEY
+    }`
+    try {
+      const res = await fetch(url)
+      const data = await res.json()
+
+      if (!res.ok) {
+        setNotFound(true)
+        setMessage(res.statusText)
+      }
+
+      if (res.ok) {
+        const sanitizedData = {
+          city: `${data.city.name}, ${data.city.country}`,
+          days: data.list,
+        }
+        setWeatherData(sanitizedData)
+        setLoading(false)
+
+        if (!history.includes(city)) {
+          setHistory((pre) => [...pre, city.toLowerCase()])
+        }
+      }
+    } catch (e) {
+      console.log(e)
+    }
+  }
+
+  if (loading)
+    return (
+      <div
+        style={{ backgroundColor: 'transparent', height: '90vh' }}
+        className="flex items-center justify-center">
+        <RotatingLines
+          visible={true}
+          height="96"
+          width="96"
+          color="orange"
+          strokeWidth="5"
+          animationDuration="0.75"
+          ariaLabel="rotating-lines-loading"
+          wrapperStyle={{}}
+          wrapperClass=""
+        />
+      </div>
+    )
 
   return (
     <div className="container mx-auto">
@@ -49,40 +88,70 @@ export default function Dashboard() {
       {/* City query */}
       <div className="flex justify-center my-3 ">
         <Query
-          setQuery={setCityQuery}
-          setHistory={setHistory}
-          history={history}
+          setNotFound={setNotFound}
+          fetchWeather={fetchWeather}
+          setMessage={setMessage}
         />
       </div>
 
       {/* Search History */}
       <div className="flex flex-wrap items-center justify-center gap-3 py-5 ">
-        {history.length !== 0 && 'RECENT: '}
+        {history && history.length !== 0 && 'RECENT: '}
         {history &&
           history.map((search, idx) => (
             <SearchHistory
               search={search}
-              setCityQuery={setCityQuery}
               key={idx}
               history={history}
               setHistory={setHistory}
+              fetchWeather={fetchWeather}
             />
           ))}
       </div>
 
-      {/* Weather Info */}
+      {/* Not Found */}
+      <div className="flex justify-center my-3">
+        <div
+          role="alert"
+          className={clsx(
+            'alert alert-warning flex justify-between',
+            !notFound && 'hidden'
+          )}>
+          <p className="text-lg text-black">{message}</p>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 stroke-current shrink-0 hover:cursor-pointer"
+            fill="none"
+            viewBox="0 0 24 24"
+            onClick={() => setNotFound(false)}>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+      </div>
+
       <div className="p-5 mt-10 rounded-md bg-opacity-10 bg-stone-400">
-        {/* City */}
         <div className="flex flex-col items-center justify-center gap-5 mb-10 text-[#ec7052]">
-          {weatherData && <City weatherData={weatherData} />}
+          {!weatherData ? (
+            <p className="text-3xl text-yellow-50">
+              Search for a city to see weather
+            </p>
+          ) : (
+            <City weatherData={weatherData} />
+          )}
         </div>
 
         {/* Weather Cards */}
         <div className="grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xxl:grid-cols-5">
-          {weatherData &&
-            weatherData.days.map((day, idx) => (
-              <WeatherCard day={day} key={idx} />
-            ))}
+          {!weatherData
+            ? ''
+            : weatherData.days.map((day, idx) => (
+                <WeatherCard day={day} key={idx} />
+              ))}
         </div>
       </div>
     </div>
