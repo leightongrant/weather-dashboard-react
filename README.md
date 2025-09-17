@@ -3,6 +3,10 @@
 A small, responsive weather dashboard built with React, Vite, and Tailwind CSS.
 It fetches weather data from OpenWeatherMap and uses Unsplash / Pixabay to show background imagery for each forecast day. The app supports searching by city name and getting the user's current location via the Geolocation API. Recent searches are saved to `localStorage`.
 
+## Screenshot
+
+<img src='./public/wd-screenshot.webp' >
+
 ## Features
 
 -   Search for a city to view a multi-day forecast.
