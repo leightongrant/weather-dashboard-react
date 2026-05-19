@@ -1,10 +1,4 @@
 import { useState, useEffect } from 'react'
-import { GiWindsock } from 'react-icons/gi'
-import { WiHumidity } from 'react-icons/wi'
-import {
-  LiaTemperatureLowSolid,
-  LiaTemperatureHighSolid,
-} from 'react-icons/lia'
 import useUnsplash from '../hooks/unsplash'
 import clsx from 'clsx'
 

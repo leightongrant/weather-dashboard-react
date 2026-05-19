@@ -5,4 +5,9 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/weather-dashboard-react/',
+  css: {
+    lightningcss: {
+      errorRecovery: true,
+    },
+  },
 })
