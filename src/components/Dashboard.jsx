@@ -5,155 +5,151 @@ import SearchHistory from './SearchHistory'
 import City from './City'
 import { last } from 'lodash-es'
 import clsx from 'clsx'
-import { RotatingLines } from 'react-loader-spinner'
+import Loading from './Loading'
+import { useQueryClient, useQuery } from '@tanstack/react-query'
+import Alert from './Alert'
+import { useSearchStore } from '../store/searchStore'
 
 export default function Dashboard() {
-  const [loading, setLoading] = useState(false)
-  const [history, setHistory] = useState(
-    JSON.parse(localStorage.getItem('searchHistory')) ||
-      localStorage.setItem('searchHistory', JSON.stringify([]))
-  )
-  const [weatherData, setWeatherData] = useState(null)
-  const [notFound, setNotFound] = useState(false)
-  const [message, setMessage] = useState('')
+	const cityName = useSearchStore((state) => state.cityName)
+	const setCityName = useSearchStore((state) => state.setCityName)
+	const queryClient = useQueryClient()
 
-  useEffect(() => {
-    history && localStorage.setItem('searchHistory', JSON.stringify(history))
-  }, [history])
+	const { isPending, error, data, isFetching, refetch } = useQuery({
+		queryKey: [cityName],
+		queryFn: async () => {
+			if (cityName) {
+				return await fetchWeather(cityName)
+			}
+			if (history && history.length > 0) {
+				return await fetchWeather(last(history))
+			}
+			return null
+		},
+	})
 
-  useEffect(() => {
-    if (history.length > 0) {
-      fetchWeather(last(history))
-    }
-  }, [])
+	const [history, setHistory] = useState([])
 
-  async function fetchWeather(city) {
-    const url = `https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${10}&q=${city}&appid=${
-      import.meta.env.VITE_OPENWEATHER_APIKEY
-    }`
-    try {
-      const res = await fetch(url)
-      const data = await res.json()
+	const [message, setMessage] = useState('')
 
-      if (!res.ok) {
-        setNotFound(true)
-        setMessage(res.statusText)
-      }
+	useEffect(() => {
+		setCityName(history[-1])
+	}, [])
 
-      if (res.ok) {
-        const sanitizedData = {
-          city: `${data.city.name}, ${data.city.country}`,
-          days: data.list,
-        }
-        setWeatherData(sanitizedData)
-        setLoading(false)
+	useEffect(() => {
+		const items = JSON.parse(localStorage.getItem('searchHistory'))
+		if (items) {
+			setHistory(items)
+		}
+		if (cityName) {
+			manageStorage('searchHistory', cityName)
+		}
+	}, [cityName])
 
-        if (!history.includes(city)) {
-          setHistory((pre) => [...pre, city.toLowerCase()])
-        }
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
+	const manageStorage = (key, value) => {
+		const items = JSON.parse(localStorage.getItem(key))
+		if (!items) {
+			localStorage.setItem(key, JSON.stringify([value.toLowerCase()]))
+			setHistory([value.toLowerCase()])
+			return
+		}
+		if (items.includes(value.toLowerCase())) return
+		setHistory((pre) => [...pre, value.toLowerCase()])
+		items.push(value.toLowerCase())
+		localStorage.setItem(key, JSON.stringify(items))
+	}
 
-  if (loading)
-    return (
-      <div
-        style={{ backgroundColor: 'transparent', height: '90vh' }}
-        className="flex items-center justify-center">
-        <RotatingLines
-          visible={true}
-          height="96"
-          width="96"
-          color="orange"
-          strokeWidth="5"
-          animationDuration="0.75"
-          ariaLabel="rotating-lines-loading"
-          wrapperStyle={{}}
-          wrapperClass=""
-        />
-      </div>
-    )
+	async function fetchWeather(city) {
+		try {
+			const res = await fetch(
+				`https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${10}&q=${city}&appid=${
+					import.meta.env.VITE_OPENWEATHER_APIKEY
+				}`,
+			)
 
-  return (
-    <div className="container mx-auto">
-      <div>
-        <h1 className="subpixel-antialiased font-black text-center uppercase text-[#ec7052] flex flex-wrap justify-center">
-          <span>Weather</span>
-          <span className="text-stone-700">Dashboard</span>
-        </h1>
-      </div>
+			if (!res.ok) {
+				throw new Error(res.statusText)
+			}
+			const data = await res.json()
+			return data
+		} catch (e) {
+			setMessage(e.message)
+			console.log(e)
+		} finally {
+			setTimeout(() => {
+				setMessage('')
+			}, 5000)
+		}
+	}
 
-      {/* City query */}
-      <div className="flex justify-center my-3 ">
-        <Query
-          setNotFound={setNotFound}
-          fetchWeather={fetchWeather}
-          setMessage={setMessage}
-        />
-      </div>
+	if (isFetching) {
+		return <Loading />
+	}
 
-      {/* Search History */}
-      <div className="flex flex-wrap items-center justify-center gap-3 py-5 ">
-        {history && history.length !== 0 && 'RECENT: '}
-        {history &&
-          history.map((search, idx) => (
-            <SearchHistory
-              search={search}
-              key={idx}
-              history={history}
-              setHistory={setHistory}
-              fetchWeather={fetchWeather}
-            />
-          ))}
-      </div>
+	return (
+		<div className='container mx-auto'>
+			{/* Alert */}
+			{message.length > 0 && (
+				<Alert
+					alertMessage={message}
+					setMessage={setMessage}
+				/>
+			)}
+			<h1 className='subpixel-antialiased font-black text-center uppercase text-[#ec7052] flex flex-wrap justify-center text-5xl mt-10 mb-10'>
+				<span>Weather</span>
+				<span className='text-stone-700'>Dashboard</span>
+			</h1>
 
-      {/* Not Found */}
-      <div className="flex justify-center my-3">
-        <div
-          role="alert"
-          className={clsx(
-            'alert alert-warning flex justify-between',
-            !notFound && 'hidden'
-          )}>
-          <p className="text-lg text-black">{message}</p>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="w-6 h-6 stroke-current shrink-0 hover:cursor-pointer"
-            fill="none"
-            viewBox="0 0 24 24"
-            onClick={() => setNotFound(false)}>
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </div>
-      </div>
+			{/* City query */}
+			<Query setMessage={setMessage} />
 
-      <div className="p-5 mt-10 rounded-md bg-opacity-10 bg-stone-400">
-        <div className="flex flex-col items-center justify-center gap-5 mb-10 text-[#ec7052]">
-          {!weatherData ? (
-            <p className="text-3xl text-yellow-50">
-              Search for a city to see weather
-            </p>
-          ) : (
-            <City weatherData={weatherData} />
-          )}
-        </div>
+			{/* Search History */}
+			<div className='flex flex-wrap items-center justify-center gap-3 py-5 '>
+				{/* {history && history.length !== 0 && 'RECENT: '} */}
+				{history &&
+					history.map((search, idx) => (
+						<SearchHistory
+							search={search}
+							key={idx}
+							history={history}
+							setHistory={setHistory}
+						/>
+					))}
+			</div>
 
-        {/* Weather Cards */}
-        <div className="grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xxl:grid-cols-5">
-          {!weatherData
-            ? ''
-            : weatherData.days.map((day, idx) => (
-                <WeatherCard day={day} key={idx} />
-              ))}
-        </div>
-      </div>
-    </div>
-  )
+			{/* Location */}
+			<div className='p-5 mt-10 bg-transparent rounded-md bg-opacity-10 bg-stone-400'>
+				<div className='flex flex-col items-center justify-center gap-5 mb-10 text-[#ec7052]'>
+					{!data ?
+						<p className='text-3xl text-yellow-50'>
+							Search for a city to see weather forecast
+						</p>
+					:	<>
+							<h2 className='text-4xl font-extrabold uppercase text-stone-400 whitespace-nowrap'>
+								{data.city.name}
+								{', '}
+								{data.city.country}
+							</h2>
+							<p className='text-3xl whitespace-nowrap'>
+								{data.list[0].weather[0].description}
+							</p>
+						</>
+					}
+				</div>
+
+				{/* Weather Cards */}
+				<div className='grid gap-5 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 xxl:grid-cols-5'>
+					{!data ?
+						''
+					:	data.list.map((day, idx) => (
+							<WeatherCard
+								day={day}
+								key={idx}
+							/>
+						))
+					}
+				</div>
+			</div>
+		</div>
+	)
 }
