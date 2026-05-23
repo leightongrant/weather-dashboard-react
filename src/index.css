@@ -1,6 +1,20 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@plugin "daisyui" {
+	themes:
+		light --default,
+		dark --preferlight,
+		cupcake,
+		coffee,
+		night,
+		sunset,
+		emerald,
+		retro,
+		halloween;
+}
+
+:root {
+	--color-primary: #ec7052;
+}
 
 body {
 	font-family: 'Raleway Variable', sans-serif;

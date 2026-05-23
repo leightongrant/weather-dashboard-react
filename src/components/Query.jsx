@@ -1,4 +1,4 @@
-import { Input, Button } from 'react-daisyui'
+// import { Input, Button } from 'daisyui'
 import { useRef } from 'react'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
 import { useState } from 'react'
@@ -32,6 +32,7 @@ const Query = ({ setMessage }) => {
 				}`,
 			)
 			const data = await res.json()
+			console.log(data)
 			queryRef.current.value = data[0].name
 			setGettingLocation(false)
 		} catch (e) {
@@ -52,8 +53,8 @@ const Query = ({ setMessage }) => {
 
 	return (
 		<div className='flex items-center justify-center w-full gap-2 p-4 font-sans '>
-			<Input
-				className='w-64 bg-stone-700/50 text-stone-100 input'
+			<input
+				className='w-64 input'
 				type='text'
 				name='query'
 				id='query'
@@ -66,13 +67,12 @@ const Query = ({ setMessage }) => {
 				}}
 			/>
 
-			<Button
-				type='button'
+			<button
 				onClick={handleQuery}
-				className='bg-stone-700/50 hover:bg-stone-800/50 text-stone-100'
+				className='btn'
 			>
 				Search
-			</Button>
+			</button>
 			{!gettingLocation ?
 				<FaLocationCrosshairs
 					onClick={() => getPosition()}

@@ -1,5 +1,14 @@
 import Dashboard from './components/Dashboard'
+import Header from './components/Header'
+import Theme from './components/Theme'
 
 export default function App() {
-  return <Dashboard />
+	return (
+		<>
+			<Header>
+				<Theme />
+			</Header>
+			<Dashboard />
+		</>
+	)
 }

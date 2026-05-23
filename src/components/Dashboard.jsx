@@ -59,22 +59,32 @@ export default function Dashboard() {
 		localStorage.setItem(key, JSON.stringify(items))
 	}
 
+	const getCoords = async (location) => {
+		try {
+			const response = await fetch(
+				`https://api.openweathermap.org/geo/1.0/direct?q=${location}&appid=${import.meta.env.VITE_OPENWEATHER_APIKEY}`,
+			)
+			return await response.json()
+		} catch (error) {
+			console.log(error)
+		}
+	}
+
 	async function fetchWeather(city) {
 		try {
-			const res = await fetch(
-				`https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&cnt=${10}&q=${city}&appid=${
-					import.meta.env.VITE_OPENWEATHER_APIKEY
-				}`,
-			)
+			const coords = await getCoords(city)
 
-			if (!res.ok) {
-				throw new Error(res.statusText)
-			}
+			const res = await fetch(
+				`https://api.openweathermap.org/data/2.5/forecast/daily?units=metric&lat=${coords[0].lat}&lon=${coords[0].lon}&cnt=${10}&appid=${import.meta.env.VITE_OPENWEATHER_APIKEY}`,
+			)
 			const data = await res.json()
+
+			console.log(data)
 			return data
 		} catch (e) {
-			setMessage(e.message)
+			setMessage('City not found')
 			console.log(e)
+			return null
 		} finally {
 			setTimeout(() => {
 				setMessage('')
@@ -95,9 +105,9 @@ export default function Dashboard() {
 					setMessage={setMessage}
 				/>
 			)}
-			<h1 className='subpixel-antialiased font-black text-center uppercase text-[#ec7052] flex flex-wrap justify-center text-5xl mt-10 mb-10'>
-				<span>Weather</span>
-				<span className='text-stone-700'>Dashboard</span>
+			<h1 className='flex flex-wrap justify-center mt-10 mb-10 subpixel-antialiased font-black text-center uppercase '>
+				<span className='text-5xl text-primary'>Weather</span>
+				<span className='text-5xl'>Dashboard</span>
 			</h1>
 
 			{/* City query */}
@@ -118,19 +128,19 @@ export default function Dashboard() {
 			</div>
 
 			{/* Location */}
-			<div className='p-5 mt-10 bg-transparent rounded-md bg-opacity-10 bg-stone-400'>
-				<div className='flex flex-col items-center justify-center gap-5 mb-10 text-[#ec7052]'>
+			<div className='p-5 mt-10 rounded-md bg-opacity-10'>
+				<div className='flex flex-col items-center justify-center gap-5 mb-10'>
 					{!data ?
 						<p className='text-3xl text-yellow-50'>
 							Search for a city to see weather forecast
 						</p>
 					:	<>
-							<h2 className='text-4xl font-extrabold uppercase text-stone-400 whitespace-nowrap'>
+							<h2 className='text-4xl font-extrabold uppercase whitespace-nowrap'>
 								{data.city.name}
 								{', '}
 								{data.city.country}
 							</h2>
-							<p className='text-3xl whitespace-nowrap'>
+							<p className='text-3xl capitalize whitespace-nowrap text-primary'>
 								{data.list[0].weather[0].description}
 							</p>
 						</>

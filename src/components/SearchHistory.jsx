@@ -30,11 +30,11 @@ const SearchHistory = ({ search, history, setHistory }) => {
 
 	return (
 		<div
-			className='flex items-center gap-3 px-1 py-1 rounded bg-stone-700/50 hover:cursor-pointer w-fit'
+			className='flex items-center gap-3 px-1 py-0 hover:cursor-pointer w-fit btn rounded-4xl btn-primary'
 			onClick={handleClick}
 		>
 			<p ref={searchRef}>{startCase(search)}</p>
-			<button className='rounded-lg hover:text-red-500 hover:cursor-auto'>
+			<button className='rounded-lg hover:text-red-300 hover:cursor-auto'>
 				<IoMdCloseCircle onClick={handleClose} />
 			</button>
 		</div>
