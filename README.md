@@ -36,42 +36,34 @@ Prerequisites
 
 Install dependencies
 
-Using npm:
+Using pnpm (recommended):
 
 ```bash
-npm install
-```
-
-Using bun:
-
-```bash
-bun install
+pnpm install
 ```
 
 Run the dev server
 
 ```bash
-npm run dev
-# or
-bun run dev
+pnpm dev
 ```
 
 Build for production
 
 ```bash
-npm run build
+pnpm build
 ```
 
 Preview production build
 
 ```bash
-npm run preview
+pnpm preview
 ```
 
 Linting
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
 ## Environment variables
