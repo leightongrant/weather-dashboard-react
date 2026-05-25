@@ -1,26 +1,30 @@
-import { useState, useEffect } from 'react'
-// import useUnsplash from '../hooks/unsplash'
-import clsx from 'clsx'
+/**
+ * WeatherCard Component
+ * 
+ * Displays weather details for a single day.
+ * - Shows date, weather icon, description, temperature (Hi/Lo), humidity, and wind speed.
+ * - Uses a randomized background gradient color from a predefined list.
+ * 
+ * @param {Object} props.day - The daily weather data object from OpenWeather API.
+ */
 
+import { useState, useEffect } from 'react'
+import clsx from 'clsx'
 import { startCase } from 'lodash-es'
-// import { useQueryClient, useQuery } from '@tanstack/react-query'
 
 export default function WeatherCard({ day }) {
-	// const queryClient = useQueryClient()
+	// Format the date from Unix timestamp
 	const date = new Date(day.dt * 1000)
+	
+	// OpenWeather icon URL
 	const icon = `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`
+	
 	const cond = `${day.weather[0].main},weather`
-	// const getBackgrounds = useUnsplash(cond)
 	const [back, setBack] = useState(null)
 
-	// const { isPending, error, data, isFetching } = useQuery({
-	// 	queryKey: ['unsplash'],
-	// 	queryFn: async () => {
-	// 		const response = await fetch('https://api.github.com/repos/TanStack/query')
-	// 		return await response.json()
-	// 	},
-	// })
-
+	/**
+	 * Returns a random Tailwind 'from-' gradient color class.
+	 */
 	function getColor() {
 		const colors = [
 			'from-slate-500',
@@ -33,31 +37,15 @@ export default function WeatherCard({ day }) {
 		return colors[idx]
 	}
 
-	// useEffect(() => {
-	// 	getBackgrounds
-	// 		.then((d) => {
-	// 			const rIdx = Math.floor(Math.random() * d.results.length)
-	// 			setBack(d.results[rIdx].urls.small)
-	// 		})
-	// 		.catch((e) => console.log(e))
-	// }, [cond])
-
 	return (
-		<div
-			className='rounded-xl glass'
-			// style={{
-			// 	backgroundImage: `url(${back})`,
-			// 	backgroundRepeat: 'no-repeat',
-			// 	backgroundSize: 'cover',
-			// 	backgroundPosition: 'center',
-			// }}
-		>
+		<div className='rounded-xl glass'>
 			<div
 				className={clsx(
 					'flex flex-col p-2 pb-8 place-items-center bg-linear-to-t h-full rounded-xl bg-base',
 					getColor(),
 				)}
 			>
+				{/* Date Header */}
 				<div className='self-start w-full'>
 					<div className='flex items-center justify-between'>
 						<p className='w-8 text-center '>{date.toDateString().slice(0, 3)}</p>
@@ -70,17 +58,21 @@ export default function WeatherCard({ day }) {
 					</div>
 				</div>
 
+				{/* Weather Icon */}
 				<img
 					src={icon}
 					alt={`weather icon ${day.weather[0].icon}`}
 				/>
 
+				{/* Weather Description */}
 				<p className='px-2 mb-2 text-sm font-bold rounded-md bg-base-500 text-primary'>{`${startCase(
 					day.weather[0].description,
 				)}`}</p>
 
+				{/* Weather Details Grid */}
 				<div className='flex flex-wrap gap-4 px-10 text-center'>
 					<div>
+						{/* Temperature */}
 						<div className='flex items-center gap-2'>
 							<p className='font-light text-primary'>Lo:</p>
 							<p>{`${Math.round(day.temp.min)}°C`}</p>
@@ -91,6 +83,7 @@ export default function WeatherCard({ day }) {
 						</div>
 					</div>
 					<div>
+						{/* Humidity and Wind Speed */}
 						<div className='flex items-center gap-2'>
 							<p className='font-light text-primary'>Hu:</p>
 							<p>{day.humidity} %</p>

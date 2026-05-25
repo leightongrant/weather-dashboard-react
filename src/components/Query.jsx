@@ -1,4 +1,12 @@
-// import { Input, Button } from 'daisyui'
+/**
+ * Query Component
+ * 
+ * Provides an input field for searching cities and a button for geolocation.
+ * - Updates the global cityName in searchStore on search.
+ * - Uses browser Geolocation API to find user's current city.
+ * - Uses OpenWeather Reverse Geocoding API to convert lat/lon to a city name.
+ */
+
 import { useRef } from 'react'
 import { FaLocationCrosshairs } from 'react-icons/fa6'
 import { useState } from 'react'
@@ -10,6 +18,9 @@ const Query = ({ setMessage }) => {
 	const [gettingLocation, setGettingLocation] = useState(false)
 	const setCityName = useSearchStore((state) => state.setCityName)
 
+	/**
+	 * Initiates the browser's geolocation request.
+	 */
 	function getPosition() {
 		setGettingLocation(true)
 		navigator.geolocation.getCurrentPosition(
@@ -24,6 +35,12 @@ const Query = ({ setMessage }) => {
 		)
 	}
 
+	/**
+	 * Converts latitude and longitude to a city name using OpenWeather API.
+	 * 
+	 * @param {number} lat - Latitude.
+	 * @param {number} lon - Longitude.
+	 */
 	async function getCityName(lat, lon) {
 		try {
 			const res = await fetch(
@@ -33,6 +50,7 @@ const Query = ({ setMessage }) => {
 			)
 			const data = await res.json()
 			console.log(data)
+			// Populate input field with found city name
 			queryRef.current.value = data[0].name
 			setGettingLocation(false)
 		} catch (e) {
@@ -40,6 +58,10 @@ const Query = ({ setMessage }) => {
 		}
 	}
 
+	/**
+	 * Handles the search submission.
+	 * Validates that input is not empty before updating global state.
+	 */
 	function handleQuery(e) {
 		if (queryRef.current.value === '') {
 			setMessage('Please enter a city name eg(Kingston, JM)')
@@ -73,10 +95,13 @@ const Query = ({ setMessage }) => {
 			>
 				Search
 			</button>
+			
+			{/* Geolocation Button */}
 			{!gettingLocation ?
 				<FaLocationCrosshairs
 					onClick={() => getPosition()}
 					className='hover:cursor-pointer hover:text-stone-600 ms-2'
+					title='Get current location'
 				/>
 			:	<Puff
 					visible={true}

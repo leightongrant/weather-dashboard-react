@@ -1,3 +1,11 @@
+/**
+ * SearchHistory Component
+ * 
+ * Represents a single search history item (pill).
+ * - Clicking the pill sets it as the active city.
+ * - Clicking the close icon removes it from history and localStorage.
+ */
+
 import { IoMdCloseCircle } from 'react-icons/io'
 import { useRef } from 'react'
 import { startCase } from 'lodash-es'
@@ -7,23 +15,34 @@ import { useEffect } from 'react'
 const SearchHistory = ({ search, history, setHistory }) => {
 	const setCityName = useSearchStore((state) => state.setCityName)
 	const searchRef = useRef()
+
+	/**
+	 * Sets the clicked history item as the active search city.
+	 */
 	function handleClick(e) {
 		e.stopPropagation()
 		setCityName(e.target.textContent.toLowerCase())
 	}
 
+	/**
+	 * Removes the history item from state and updates localStorage.
+	 */
 	function handleClose(e) {
 		e.stopPropagation()
 		const searchIndex = history.indexOf(searchRef.current.textContent.toLowerCase())
 
+		// Remove the item using toSpliced (non-mutating)
 		setHistory((pre) => {
 			return [...pre.toSpliced(searchIndex, 1)]
 		})
 
+		// Special case: if it was the last item, ensure localStorage is cleared
 		if (history.length === 1) {
 			localStorage.setItem('searchHistory', JSON.stringify([]))
 		}
 	}
+
+	// Persist history changes to localStorage whenever the history state updates
 	useEffect(() => {
 		localStorage.setItem('searchHistory', JSON.stringify(history))
 	}, [history])

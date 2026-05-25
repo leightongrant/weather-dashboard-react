@@ -1,3 +1,8 @@
+/**
+ * Loading Component
+ * 
+ * Full-page loading spinner shown during weather data fetching.
+ */
 import { RotatingLines } from 'react-loader-spinner'
 
 const Loading = () => {

@@ -1,3 +1,10 @@
+/**
+ * City Component
+ * 
+ * Displays the current city name and the primary weather description.
+ * 
+ * @param {Object} props.weatherData - The weather data object.
+ */
 const City = ({ weatherData }) => {
 	return (
 		<>

@@ -1,3 +1,12 @@
+/**
+ * Alert Component
+ * 
+ * Displays a dismissible warning message to the user.
+ * Usually used for API errors like "City not found".
+ * 
+ * @param {string} props.alertMessage - The message to display.
+ * @param {Function} props.setMessage - Function to clear/update the message.
+ */
 const Alert = ({ alertMessage, setMessage }) => {
 	return (
 		<div className='flex justify-center mx-auto my-3 w-fit'>
@@ -6,6 +15,7 @@ const Alert = ({ alertMessage, setMessage }) => {
 				className='flex justify-between alert alert-warning'
 			>
 				<p className='text-lg text-black'>{alertMessage}</p>
+				{/* Dismiss Icon */}
 				<svg
 					xmlns='http://www.w3.org/2000/svg'
 					className='w-6 h-6 stroke-current shrink-0 hover:cursor-pointer'
