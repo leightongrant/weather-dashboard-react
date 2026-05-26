@@ -48,7 +48,7 @@ export default function Dashboard() {
 
 	// Initial load: Set the city to the last entry in history if available
 	useEffect(() => {
-		setCityName(history[-1])
+		setCityName(last(history))
 	}, [])
 
 	// Load history from localStorage and save new searches
@@ -155,7 +155,7 @@ export default function Dashboard() {
 			<Query setMessage={setMessage} />
 
 			{/* Recent searches history list */}
-			<div className='flex flex-wrap items-center justify-center gap-3 py-5 '>
+			<div className='flex items-center justify-center gap-3 p-5 overflow-auto overscroll-auto'>
 				{history &&
 					history.map((search, idx) => (
 						<SearchHistory
